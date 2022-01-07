@@ -3,8 +3,8 @@ import './App.css';
 
 import Board from './components/Board';
 
-const player_1 = 'X';
-const player_2 = 'O';
+const PLAYER_1 = 'X';
+const PLAYER_2 = 'O';
 
 const generateSquares = () => {
   const squares = [];
@@ -34,6 +34,24 @@ const App = () => {
   // You will need to create a method to change the square
   //   When it is clicked on.
   //   Then pass it into the squares as a callback
+
+  const clickOnSquares = (squareId) => {
+    console.log('Is this thing working');
+    let newSquares = [...squares];
+    console.log(newSquares)
+    for (let row = 0; row < newSquares.length; row++) {
+      for (let columns = 0; columns < row.length; columns++) {
+        if (newSquares[row][columns].id === squareId) {
+          newSquares[row][columns].value = 'X';
+        }
+      }
+    }
+    setSquares(newSquares);
+  };
+  const updateSquare = () => {};
+  // when the square is clicked( depending on the player), the square(which can be gotten by id) can change
+  // we need to make sure there is a click button set up on the squares
+  // if not make it otherwise, we need to make an update function that sets the value of the square to X or O
 
   const checkForWinner = () => {
     let i = 0;
@@ -81,14 +99,14 @@ const App = () => {
   };
 
   return (
-    <div className='App'>
-      <header className='App-header'>
+    <div className="App">
+      <header className="App-header">
         <h1>React Tic Tac Toe</h1>
         <h2>The winner is ... -- Fill in for wave 3 </h2>
         <button>Reset Game</button>
       </header>
       <main>
-        <Board squares={squares} />
+        <Board squares={squares} onClickCallback={clickOnSquares} />
       </main>
     </div>
   );
