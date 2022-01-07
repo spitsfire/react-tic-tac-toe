@@ -38,9 +38,9 @@ const App = () => {
   const clickOnSquares = (squareId) => {
     console.log('Is this thing working');
     let newSquares = [...squares];
-    console.log(newSquares)
+    console.log(newSquares);
     for (let row = 0; row < newSquares.length; row++) {
-      for (let columns = 0; columns < row.length; columns++) {
+      for (let columns = 0; columns < newSquares.length; columns++) {
         if (newSquares[row][columns].id === squareId) {
           newSquares[row][columns].value = 'X';
         }
