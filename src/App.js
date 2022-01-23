@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
 import Board from './components/Board';
 
-const PLAYER_1 = 'X';
-const PLAYER_2 = 'O';
+const PLAYER1 = 'X';
+const PLAYER2 = 'O';
 
 const generateSquares = () => {
   const squares = [];
@@ -24,39 +24,56 @@ const generateSquares = () => {
 
   return squares;
 };
+ 
 
 const App = () => {
-  // This starts state off as a 2D array of JS objects with
-  // empty value and unique ids.
   const [squares, setSquares] = useState(generateSquares());
+  const [turn, setTurn] = useState('X');
+  const [winner, setWinner] = useState(null);
 
-  // Wave 2
-  // You will need to create a method to change the square
-  //   When it is clicked on.
-  //   Then pass it into the squares as a callback
-
-  const clickOnSquares = (squareId) => {
-    console.log('Is this thing working');
-    let newSquares = [...squares];
-    console.log(newSquares);
-    for (let row = 0; row < newSquares.length; row++) {
-      for (let columns = 0; columns < newSquares.length; columns++) {
-        if (newSquares[row][columns].id === squareId) {
-          newSquares[row][columns].value = 'X';
-        }
-      }
+  const toggleTurn = () => {  
+    if (turn === 'X'){
+      setTurn('O');
+    } else {
+      setTurn('X');
     }
-    setSquares(newSquares);
   };
-  const updateSquare = () => {};
-  // when the square is clicked( depending on the player), the square(which can be gotten by id) can change
-  // we need to make sure there is a click button set up on the squares
-  // if not make it otherwise, we need to make an update function that sets the value of the square to X or O
 
+
+  const onClickCallback = (id) => {
+    const newSquares = squares.map( (row) => {
+      row.map((square) => {
+        if (square.id === id && square.used !== true) {
+          const newValue = {value: turn,
+                            used: true};
+          let newSquare = Object.assign(square, newValue);
+         return newSquare;
+        }
+        return square;
+      });
+      return row;
+    });
+    setSquares(newSquares);
+    toggleTurn();
+    if (checkForWinner()) {
+      const newSquares = squares.map( (row) => {
+        row.map((square) => {
+          const newValue = {used: true};
+          let newSquare = Object.assign(square, newValue);
+          return newSquare;
+
+        });
+        return row;
+      });
+      setSquares(newSquares);
+      setWinner(checkForWinner());
+    }
+
+
+  };
+  
   const checkForWinner = () => {
     let i = 0;
-
-    // Check all the rows and columns for a winner
     while (i < 3) {
       if (
         squares[i][0].value === squares[i][1].value &&
@@ -96,17 +113,22 @@ const App = () => {
 
   const resetGame = () => {
     // Complete in Wave 4
+    setSquares(generateSquares());
+    setTurn('X');
+    setWinner(null);
   };
 
+  
+
   return (
-    <div className="App">
-      <header className="App-header">
+    <div className='App'>
+      <header className='App-header'>
         <h1>React Tic Tac Toe</h1>
-        <h2>The winner is ... -- Fill in for wave 3 </h2>
-        <button>Reset Game</button>
+        {winner ?  <h2>Winner is {winner}</h2> : <h2>Current Player {turn}</h2> }        
+        <button onClick={() =>resetGame()}>Reset Game</button>
       </header>
       <main>
-        <Board squares={squares} onClickCallback={clickOnSquares} />
+        <Board squares={squares} onClickCallback={onClickCallback}/>
       </main>
     </div>
   );
